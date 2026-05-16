@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+
+Sitemap: https://dronov-dmitry.github.io/energo_pasport/sitemap.xml
+Host: https://dronov-dmitry.github.io

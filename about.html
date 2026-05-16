@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>О сервисе — Энергетический паспорт здания онлайн | Расчёт по СП 50.13330.2024</title>
+    <meta name="description" content="Бесплатный онлайн-калькулятор для расчёта энергетического паспорта здания. Проверка теплозащиты по СП 50.13330.2024, расчёт ГСОП, сопротивления теплопередаче R-фактор. Для проектировщиков и энергоаудиторов.">
+    <meta name="keywords" content="энергетический паспорт, расчёт энергопаспорта, теплозащита здания, СП 50.13330.2024, ГСОП, сопротивление теплопередаче, энергоаудит">
+    <link rel="canonical" href="https://dronov-dmitry.github.io/energo_pasport/about.html">
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            max-width: 896px; /* max-w-4xl как у калькулятора */
+            margin: 0 auto;
+            padding: 32px 16px; /* py-8 px-4 как у калькулятора */
+            color: #e2e8f0;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+
+        /* Background glow effects */
+        .bg-glow {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.15;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .bg-glow-1 {
+            width: 400px;
+            height: 400px;
+            background: #3b82f6;
+            top: -100px;
+            right: -100px;
+        }
+        .bg-glow-2 {
+            width: 300px;
+            height: 300px;
+            background: #06b6d4;
+            top: 50%;
+            left: -100px;
+        }
+        .bg-glow-3 {
+            width: 350px;
+            height: 350px;
+            background: #14b8a6;
+            bottom: -100px;
+            right: 20%;
+        }
+
+        /* Glassmorphism cards */
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .glass-strong {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 1rem;
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(59, 130, 246, 0.5);
+        }
+
+        /* Feature items */
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 0.75rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .feature-icon {
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        /* Audience cards */
+        .audience-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+        .audience-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            transform: translateY(-2px);
+        }
+        .audience-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        /* Standards grid */
+        .standards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        .standard-item {
+            padding: 1rem;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 0.75rem;
+            text-align: center;
+        }
+
+        /* Benefit items */
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 0.75rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            body { padding: 16px; }
+            .standards-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.3); }
+    </style>
+</head>
+<body>
+    <!-- Background decorative elements -->
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+    <div class="bg-glow bg-glow-3"></div>
+
+    <!-- Header -->
+    <header class="glass-strong" style="text-align: center; padding: 1.5rem; margin-bottom: 2rem; position: relative; z-index: 10; border-radius: 1rem; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);">
+        <div style="display: flex; align-items: center; justify-content: center; gap: 0.75rem; margin-bottom: 1rem;">
+            <!-- Icon -->
+            <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #3b82f6, #06b6d4); border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 21V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v5m-4 0h4"/>
+                </svg>
+            </div>
+            <h1 style="margin: 0; font-size: 2rem; font-weight: 700; background: linear-gradient(135deg, #60a5fa, #06b6d4, #14b8a6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                Энергопаспорт
+            </h1>
+        </div>
+        <p style="font-size: 1.125rem; color: #94a3b8; margin: 0;">
+            Профессиональный расчёт энергетического паспорта здания
+        </p>
+        <p style="font-size: 0.875rem; color: #64748b; margin-top: 0.5rem;">
+            СП 50.13330.2024 • ГСОП • R-фактор • Класс энергоэффективности
+        </p>
+    </header>
+
+    <!-- Main content -->
+    <main style="position: relative; z-index: 10;">
+        <!-- Intro card -->
+        <div class="glass" style="padding: 1.5rem; margin-bottom: 1.5rem;">
+            <p style="font-size: 1.125rem; color: #e2e8f0; margin: 0 0 1rem 0;">
+                <strong>Онлайн-калькулятор</strong> для расчёта энергетического паспорта здания по нормам <strong style="color: #60a5fa;">СП 50.13330.2024</strong> «Тепловая защита зданий».
+            </p>
+            <p style="color: #94a3b8; margin: 0;">
+                Сервис предназначен для проектировщиков, энергоаудиторов, архитекторов и строителей.
+            </p>
+        </div>
+
+        <!-- CTA -->
+        <div style="text-align: center; margin: 2rem 0;">
+            <a href="./" class="btn-primary" style="display: inline-block; padding: 1rem 2rem; font-size: 1.125rem; font-weight: 600;">
+                👉 Открыть калькулятор
+            </a>
+        </div>
+
+        <!-- What is energy passport -->
+        <div class="glass" style="padding: 1.5rem; margin-bottom: 1.5rem;">
+            <h2 style="color: #f8fafc; margin: 0 0 1rem 0; font-size: 1.5rem;">Что такое энергетический паспорт</h2>
+            <p style="color: #cbd5e1; margin: 0 0 1rem 0;">
+                Энергетический паспорт здания — это документ, содержащий сведения об энергетической эффективности здания, его тепловой защите и расходе энергии на отопление, вентиляцию и горячее водоснабжение.
+            </p>
+            <p style="color: #94a3b8; margin: 0 0 0.5rem 0;">Паспорт обязателен для:</p>
+            <ul style="color: #cbd5e1; margin: 0; padding-left: 1.5rem;">
+                <li style="margin: 0.5rem 0;">Новых зданий при вводе в эксплуатацию</li>
+                <li style="margin: 0.5rem 0;">Зданий после капитального ремонта с изменением теплозащиты</li>
+                <li style="margin: 0.5rem 0;">Зданий при проведении энергетического обследования</li>
+            </ul>
+        </div>
+
+        <!-- Features grid -->
+        <div class="glass" style="padding: 1.5rem; margin-bottom: 1.5rem;">
+            <h2 style="color: #f8fafc; margin: 0 0 1rem 0; font-size: 1.5rem;">Возможности калькулятора</h2>
+            <div style="display: grid; gap: 1rem;">
+                <div class="feature-item">
+                    <span class="feature-icon">🌡️</span>
+                    <span><strong>Расчёт ГСОП</strong> (градусо-суток отопительного периода) для любого города России</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">📊</span>
+                    <span><strong>Расчёт сопротивления теплопередаче</strong> (R-фактор) ограждающих конструкций</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">✓</span>
+                    <span><strong>Проверка соответствия нормам</strong> СП 50.13330.2024</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">🏆</span>
+                    <span><strong>Определение класса энергетической эффективности</strong> по приказу 399/пр</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">📚</span>
+                    <span><strong>Справочник материалов</strong> с коэффициентами теплопроводности</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">🗺️</span>
+                    <span><strong>Климатические данные</strong> по всем городам РФ</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Target audience -->
+        <div class="glass" style="padding: 1.5rem; margin-bottom: 1.5rem;">
+            <h2 style="color: #f8fafc; margin: 0 0 1rem 0; font-size: 1.5rem;">Кому будет полезен сервис</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+                <div class="audience-card">
+                    <div class="audience-icon" style="background: rgba(59, 130, 246, 0.2);">📐</div>
+                    <div>
+                        <strong style="color: #60a5fa;">Проектировщики</strong>
+                        <p style="margin: 0.25rem 0 0 0; font-size: 0.875rem; color: #94a3b8;">Проверка теплозащиты на соответствие нормам</p>
+                    </div>
+                </div>
+                <div class="audience-card">
+                    <div class="audience-icon" style="background: rgba(6, 182, 212, 0.2);">⚡</div>
+                    <div>
+                        <strong style="color: #06b6d4;">Энергоаудиторы</strong>
+                        <p style="margin: 0.25rem 0 0 0; font-size: 0.875rem; color: #94a3b8;">Расчёт для аттестации и отчётности</p>
+                    </div>
+                </div>
+                <div class="audience-card">
+                    <div class="audience-icon" style="background: rgba(16, 185, 129, 0.2);">🏛️</div>
+                    <div>
+                        <strong style="color: #10b981;">Архитекторы</strong>
+                        <p style="margin: 0.25rem 0 0 0; font-size: 0.875rem; color: #94a3b8;">Подбор материалов и утеплителя</p>
+                    </div>
+                </div>
+                <div class="audience-card">
+                    <div class="audience-icon" style="background: rgba(139, 92, 246, 0.2);">🏗️</div>
+                    <div>
+                        <strong style="color: #8b5cf6;">Строители</strong>
+                        <p style="margin: 0.25rem 0 0 0; font-size: 0.875rem; color: #94a3b8;">Контроль качества теплозащиты</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Standards -->
+        <div class="glass" style="padding: 1.5rem; margin-bottom: 1.5rem;">
+            <h2 style="color: #f8fafc; margin: 0 0 1rem 0; font-size: 1.5rem;">Нормативная база</h2>
+            <p style="color: #94a3b8; margin: 0 0 1rem 0;">Калькулятор использует актуальные нормативные документы:</p>
+            <div class="standards-grid">
+                <div class="standard-item">
+                    <strong style="color: #60a5fa;">СП 50.13330.2024</strong>
+                    <p style="margin: 0; font-size: 0.875rem; color: #94a3b8;">Тепловая защита зданий</p>
+                </div>
+                <div class="standard-item">
+                    <strong style="color: #60a5fa;">СП 23-101-2004</strong>
+                    <p style="margin: 0; font-size: 0.875rem; color: #94a3b8;">Проектирование тепловой защиты</p>
+                </div>
+                <div class="standard-item">
+                    <strong style="color: #60a5fa;">ГОСТ 30494-2011</strong>
+                    <p style="margin: 0; font-size: 0.875rem; color: #94a3b8;">Параметры микроклимата</p>
+                </div>
+                <div class="standard-item">
+                    <strong style="color: #60a5fa;">Приказ №399/пр</strong>
+                    <p style="margin: 0; font-size: 0.875rem; color: #94a3b8;">Классы энергоэффективности</p>
+                </div>
+                <div class="standard-item">
+                    <strong style="color: #60a5fa;">СП 131.13330.2020</strong>
+                    <p style="margin: 0; font-size: 0.875rem; color: #94a3b8;">Строительная климатология</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- How to use -->
+        <div class="glass" style="padding: 1.5rem; margin-bottom: 1.5rem;">
+            <h2 style="color: #f8fafc; margin: 0 0 1rem 0; font-size: 1.5rem;">Как пользоваться калькулятором</h2>
+            <ol style="color: #cbd5e1; margin: 0; padding-left: 1.5rem;">
+                <li style="margin: 0.75rem 0;">Выберите регион и населённый пункт из справочника</li>
+                <li style="margin: 0.75rem 0;">Укажите параметры здания: этажность, объём, тип</li>
+                <li style="margin: 0.75rem 0;">Задайте конструктивные фрагменты (стены, перекрытия) со слоями материалов</li>
+                <li style="margin: 0.75rem 0;">Укажите параметры заселения и вентиляции</li>
+                <li style="margin: 0.75rem 0;">Нажмите «Рассчитать» и получите результаты энергопаспорта</li>
+            </ol>
+        </div>
+
+        <!-- Benefits -->
+        <div class="glass" style="padding: 1.5rem; margin-bottom: 1.5rem;">
+            <h2 style="color: #f8fafc; margin: 0 0 1rem 0; font-size: 1.5rem;">Преимущества онлайн-калькулятора</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                <div class="benefit-item">
+                    <span style="font-size: 1.5rem;">✅</span>
+                    <div>
+                        <strong style="color: #f8fafc;">Бесплатно</strong>
+                        <p style="margin: 0; font-size: 0.875rem; color: #94a3b8;">Базовый расчёт без ограничений</p>
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <span style="font-size: 1.5rem;">📋</span>
+                    <div>
+                        <strong style="color: #f8fafc;">Актуальные нормы</strong>
+                        <p style="margin: 0; font-size: 0.875rem; color: #94a3b8;">СП 50.13330.2024</p>
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <span style="font-size: 1.5rem;">📱</span>
+                    <div>
+                        <strong style="color: #f8fafc;">Удобный интерфейс</strong>
+                        <p style="margin: 0; font-size: 0.875rem; color: #94a3b8;">Работает на любом устройстве</p>
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <span style="font-size: 1.5rem;">💾</span>
+                    <div>
+                        <strong style="color: #f8fafc;">Сохранение расчётов</strong>
+                        <p style="margin: 0; font-size: 0.875rem; color: #94a3b8;">В личном кабинете</p>
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <span style="font-size: 1.5rem;">📤</span>
+                    <div>
+                        <strong style="color: #f8fafc;">Экспорт данных</strong>
+                        <p style="margin: 0; font-size: 0.875rem; color: #94a3b8;">В формате JSON</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA -->
+        <div style="text-align: center; margin: 2rem 0;">
+            <a href="./" class="btn-primary" style="display: inline-block; padding: 1rem 2rem; font-size: 1.125rem; font-weight: 600;">
+                🚀 Попробовать бесплатно
+            </a>
+        </div>
+
+        <!-- Back link -->
+        <div style="text-align: center; margin: 2rem 0;">
+            <a href="./" style="color: #60a5fa; text-decoration: none; font-weight: 500;">
+                ← Вернуться к калькулятору
+            </a>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer style="position: relative; z-index: 10; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid rgba(255, 255, 255, 0.1); text-align: center; color: #64748b; font-size: 0.875rem;">
+        <p>© 2024-2026 Энергопаспорт здания онлайн</p>
+        <p style="margin-top: 0.5rem;">
+            <a href="https://github.com/dronov-dmitry/energo_pasport" style="color: #60a5fa; text-decoration: none;">GitHub</a>
+        </p>
+    </footer>
+</body>
+</html>
